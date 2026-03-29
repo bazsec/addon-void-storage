@@ -1,0 +1,82 @@
+{
+    "DeadlyBossMods": {
+        "url": "https://www.curseforge.com/wow/addons/deadly-boss-mods",
+        "source": "curseforge"
+    },
+    "DBM-Core": {
+        "url": "https://www.curseforge.com/wow/addons/deadly-boss-mods",
+        "source": "curseforge"
+    },
+    "Details": {
+        "url": "https://www.curseforge.com/wow/addons/details",
+        "source": "curseforge"
+    },
+    "WeakAuras": {
+        "url": "https://www.curseforge.com/wow/addons/weakauras-2",
+        "source": "curseforge"
+    },
+    "Bagnon": {
+        "url": "https://www.curseforge.com/wow/addons/bagnon",
+        "source": "curseforge"
+    },
+    "Auctionator": {
+        "url": "https://www.curseforge.com/wow/addons/auctionator",
+        "source": "curseforge"
+    },
+    "Bartender4": {
+        "url": "https://www.curseforge.com/wow/addons/bartender4",
+        "source": "curseforge"
+    },
+    "Plater": {
+        "url": "https://www.curseforge.com/wow/addons/plater-nameplates",
+        "source": "curseforge"
+    },
+    "Recount": {
+        "url": "https://www.curseforge.com/wow/addons/recount",
+        "source": "curseforge"
+    },
+    "ZygorGuidesViewer": {
+        "url": "https://zygorguides.com",
+        "source": "website"
+    },
+    "ElvUI": {
+        "url": "https://www.tukui.org/elvui",
+        "source": "website"
+    },
+    "Questie": {
+        "url": "https://www.curseforge.com/wow/addons/questie",
+        "source": "curseforge"
+    },
+    "Leatrix_Plus": {
+        "url": "https://www.curseforge.com/wow/addons/leatrix-plus",
+        "source": "curseforge"
+    },
+    "Leatrix_Plus_Classic": {
+        "url": "https://www.curseforge.com/wow/addons/leatrix-plus-classic",
+        "source": "curseforge"
+    },
+    "Immersion": {
+        "url": "https://www.curseforge.com/wow/addons/immersion",
+        "source": "curseforge"
+    },
+    "WorldQuestTracker": {
+        "url": "https://www.curseforge.com/wow/addons/world-quest-tracker",
+        "source": "curseforge"
+    },
+    "OmniCC": {
+        "url": "https://www.curseforge.com/wow/addons/omnicc",
+        "source": "curseforge"
+    },
+    "GatherMate2": {
+        "url": "https://www.curseforge.com/wow/addons/gathermate2",
+        "source": "curseforge"
+    },
+    "Pawn": {
+        "url": "https://www.curseforge.com/wow/addons/pawn",
+        "source": "curseforge"
+    },
+    "HousingCompanion": {
+        "url": "https://www.curseforge.com/wow/addons/housing-companion",
+        "source": "curseforge"
+    }
+}
