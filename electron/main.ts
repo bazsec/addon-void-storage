@@ -7,11 +7,19 @@ import type { IpcMainInvokeEvent } from 'electron';
 const store = new Store();
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
-if (require('electron-squirrel-startup')) {
-    app.quit();
+if (process.platform === 'win32') {
+    try {
+        if (require('electron-squirrel-startup')) {
+            app.quit();
+        }
+    } catch {
+        // electron-squirrel-startup not available outside Windows installers
+    }
 }
 
 function createWindow() {
+    const isMac = process.platform === 'darwin';
+
     const mainWindow = new BrowserWindow({
         width: 1200,
         height: 800,
@@ -21,13 +29,18 @@ function createWindow() {
             contextIsolation: true,
         },
         autoHideMenuBar: true,
-        backgroundColor: '#09090b', // Match the void theme
-        titleBarStyle: 'hidden', // Custom title bar opportunity, or just hidden native one
-        titleBarOverlay: {
-            color: '#09090b',
-            symbolColor: '#ffffff',
-            height: 40
-        }
+        backgroundColor: '#09090b',
+        titleBarStyle: 'hidden',
+        ...(isMac
+            ? { trafficLightPosition: { x: 12, y: 12 } }
+            : {
+                titleBarOverlay: {
+                    color: '#09090b',
+                    symbolColor: '#ffffff',
+                    height: 40
+                }
+            }
+        ),
     });
 
     if (process.env.VITE_DEV_SERVER_URL) {
@@ -69,8 +82,17 @@ function setupIpcHandlers() {
 
     // Select WoW Directory
     ipcMain.handle('select-wow-dir', async (_event: IpcMainInvokeEvent, version: 'retail' | 'classic' = 'retail') => {
+        const isMac = process.platform === 'darwin';
         const title = version === 'classic' ? 'Select World of Warcraft "_classic_" Directory' : 'Select World of Warcraft "_retail_" Directory';
-        const expectedExe = version === 'classic' ? 'WowClassic.exe' : 'Wow.exe';
+
+        // Platform-specific executables/app bundles to validate against
+        const expectedFiles = isMac
+            ? (version === 'classic'
+                ? ['World of Warcraft Classic.app', 'WoWClassic.app']
+                : ['World of Warcraft.app', 'Wow.app'])
+            : (version === 'classic'
+                ? ['WowClassic.exe']
+                : ['Wow.exe']);
 
         const result = await dialog.showOpenDialog({
             properties: ['openDirectory'],
@@ -81,14 +103,26 @@ function setupIpcHandlers() {
 
         const selectedPath = result.filePaths[0];
 
-        // Validation: Check for specific executable
-        const hasExe = await fs.pathExists(path.join(selectedPath, expectedExe));
+        // Validation: Check for executable or .app bundle
+        let valid = false;
+        for (const file of expectedFiles) {
+            if (await fs.pathExists(path.join(selectedPath, file))) {
+                valid = true;
+                break;
+            }
+        }
 
-        if (!hasExe) {
-            // Strong validation failure
+        // Fallback: accept if Interface + WTF folders exist
+        if (!valid) {
+            const hasInterface = await fs.pathExists(path.join(selectedPath, 'Interface'));
+            const hasWTF = await fs.pathExists(path.join(selectedPath, 'WTF'));
+            if (hasInterface && hasWTF) valid = true;
+        }
+
+        if (!valid) {
             dialog.showErrorBox(
                 "Invalid Directory",
-                `The selected folder does not contain ${expectedExe}. Please select the ${version} directory.`
+                `The selected folder does not appear to be a valid WoW ${version} directory. Please select the correct ${version === 'classic' ? '_classic_' : '_retail_'} folder.`
             );
             return null;
         }
@@ -103,18 +137,31 @@ function setupIpcHandlers() {
 
     // Scan WoW Directories
     ipcMain.handle('scan-wow-dirs', async (_event: IpcMainInvokeEvent, version: 'retail' | 'classic' = 'retail') => {
+        const isMac = process.platform === 'darwin';
         const suffixes = version === 'classic' ? ['_classic_', '_classic_era_', '_classic_ptr_'] : ['_retail_', '_retail_ptr_'];
-        const possibleExes = version === 'classic' ? ['WowClassic.exe', 'Wow.exe'] : ['Wow.exe'];
 
-        const commonRoots = [
-            'C:\\Program Files (x86)\\World of Warcraft',
-            'C:\\Program Files\\World of Warcraft',
-            'C:\\World of Warcraft',
-            'D:\\World of Warcraft',
-            'E:\\World of Warcraft',
-            'D:\\Games\\World of Warcraft',
-            'E:\\Games\\World of Warcraft'
-        ];
+        const possibleExes = isMac
+            ? (version === 'classic'
+                ? ['World of Warcraft Classic.app', 'WoWClassic.app']
+                : ['World of Warcraft.app', 'Wow.app'])
+            : (version === 'classic'
+                ? ['WowClassic.exe', 'Wow.exe']
+                : ['Wow.exe']);
+
+        const commonRoots = isMac
+            ? [
+                '/Applications/World of Warcraft',
+                path.join(app.getPath('home'), 'Applications/World of Warcraft'),
+            ]
+            : [
+                'C:\\Program Files (x86)\\World of Warcraft',
+                'C:\\Program Files\\World of Warcraft',
+                'C:\\World of Warcraft',
+                'D:\\World of Warcraft',
+                'E:\\World of Warcraft',
+                'D:\\Games\\World of Warcraft',
+                'E:\\Games\\World of Warcraft'
+            ];
 
         for (const root of commonRoots) {
             for (const suffix of suffixes) {
@@ -421,7 +468,10 @@ function setupIpcHandlers() {
             // Load addon database once for fallback lookups
             let addonDb: Record<string, { url: string; source: string }> = {};
             try {
-                const dbPath = path.join(__dirname, 'addon-db.json');
+                // In production: extraResources. In dev: source electron/ folder.
+                const dbPath = app.isPackaged
+                    ? path.join(process.resourcesPath, 'addon-db.json')
+                    : path.join(__dirname, '..', 'electron', 'addon-db.json');
                 if (fs.existsSync(dbPath)) {
                     addonDb = fs.readJsonSync(dbPath);
                 }

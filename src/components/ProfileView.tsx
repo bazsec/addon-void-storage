@@ -1,5 +1,5 @@
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core';
-import { arrayMove, SortableContext, sortableKeyboardCoordinates, rectSortingStrategy } from '@dnd-kit/sortable';
+import { SortableContext, sortableKeyboardCoordinates, rectSortingStrategy } from '@dnd-kit/sortable';
 import { SortableProfileCard } from './SortableProfileCard';
 import { FolderOpen, Plus, Box, Eraser } from 'lucide-react'
 import { Button } from './ui/Button'
@@ -50,7 +50,6 @@ export function ProfileView({
   onDragEnd,
 }: ProfileViewProps) {
   const isClassic = version === 'classic'
-  const accentColor = isClassic ? 'orange' : 'void-accent'
   const glowColor = isClassic ? 'rgba(249,115,22,0.2)' : 'rgba(124,58,237,0.2)'
   const buttonGlow = isClassic ? 'rgba(249,115,22,0.3)' : 'rgba(124,58,237,0.3)'
   const label = isClassic ? 'Classic' : 'Retail'
