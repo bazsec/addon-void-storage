@@ -1,73 +1,71 @@
-# React + TypeScript + Vite
+<p align="center">
+  <img src="public/AddonVoidStorageLogo.png" alt="Addon Void Storage" width="200" />
+</p>
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+<h1 align="center">Addon Void Storage</h1>
 
-Currently, two official plugins are available:
+<p align="center">
+  A desktop app for managing your World of Warcraft addon profiles.<br/>
+  Save, restore, and swap between different Interface and WTF folder configurations with a single click.
+</p>
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+<p align="center">
+  <a href="https://github.com/bazsec/addon-void-storage/releases">Download Latest Release</a>
+</p>
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+<p align="center">
+  <img src="screenshot.png" alt="Addon Void Storage Screenshot" width="800" />
+</p>
 
-## Expanding the ESLint configuration
+## Features
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **Profile Snapshots** - Save your current addon setup as a named profile (e.g., "Raid UI", "PVP Healer", "Leveling")
+- **One-Click Restore** - Instantly swap your live game folders with any saved profile
+- **Auto-Backup** - Your current state is automatically backed up before every restore, so nothing is lost
+- **Retail & Classic** - Full support for both WoW Retail and Classic/Classic Era
+- **Addon Scanner** - View all addons in a profile with links to CurseForge, GitHub, and WoWInterface
+- **Drag & Drop Reorder** - Organize your profiles however you like
+- **Auto-Detect** - Automatically finds your WoW installation
+- **Cross-Platform** - Works on Windows and macOS
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Download
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+Grab the latest installer from the [Releases](https://github.com/bazsec/addon-void-storage/releases) page:
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- **Windows** - `.exe` installer
+- **macOS** - `.dmg` installer
+
+## Getting Started
+
+1. Download and install the app
+2. On first launch, click **Auto-Detect** or manually browse to your WoW `_retail_` or `_classic_` folder
+3. Click **Add New** to save your current addon configuration
+4. Switch between profiles anytime using **Restore**
+
+> Make sure you've launched WoW at least once before saving profiles, so the Interface and WTF folders exist.
+
+## Development
+
+```bash
+# Install dependencies
+npm install
+
+# Run in development mode
+npm run dev:electron
+
+# Build for current platform
+npm run package
+
+# Build for specific platform
+npm run package:win
+npm run package:mac
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Built With
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- Electron
+- React + TypeScript
+- Tailwind CSS
+- Vite
