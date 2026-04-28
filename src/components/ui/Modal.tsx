@@ -11,15 +11,13 @@ interface ModalProps {
 }
 
 export function Modal({ open, onClose, children, className }: ModalProps) {
-    // Close on ESC key
     React.useEffect(() => {
+        if (!open) return
         const handleEsc = (e: KeyboardEvent) => {
             if (e.key === 'Escape') onClose()
         }
-        if (open) {
-            window.addEventListener('keydown', handleEsc)
-            return () => window.removeEventListener('keydown', handleEsc)
-        }
+        window.addEventListener('keydown', handleEsc)
+        return () => window.removeEventListener('keydown', handleEsc)
     }, [open, onClose])
 
     return (

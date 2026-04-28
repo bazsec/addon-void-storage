@@ -1,9 +1,9 @@
-import { AlertTriangle, Info, Trash2, RefreshCw } from "lucide-react"
+import { AlertTriangle, Trash2, RefreshCw } from "lucide-react"
 import { Modal } from "./Modal"
-import { Button } from "./Button"
+import { Button, type ButtonProps } from "./Button"
 import { motion } from "framer-motion"
 
-export type ConfirmVariant = 'danger' | 'warning' | 'info' | 'success';
+export type ConfirmVariant = 'danger' | 'warning' | 'info';
 
 interface ConfirmModalProps {
     open: boolean
@@ -17,6 +17,18 @@ interface ConfirmModalProps {
     isLoading?: boolean
 }
 
+const ICON: Record<ConfirmVariant, React.ReactNode> = {
+    danger: <Trash2 className="h-6 w-6 text-red-500" />,
+    warning: <AlertTriangle className="h-6 w-6 text-orange-500" />,
+    info: <RefreshCw className="h-6 w-6 text-emerald-500" />,
+}
+
+const BTN_VARIANT: Record<ConfirmVariant, ButtonProps['variant']> = {
+    danger: 'destructive',
+    warning: 'default',
+    info: 'default',
+}
+
 export function ConfirmModal({
     open,
     onClose,
@@ -28,32 +40,15 @@ export function ConfirmModal({
     variant = "warning",
     isLoading = false
 }: ConfirmModalProps) {
-
-    const getIcon = () => {
-        switch (variant) {
-            case 'danger': return <Trash2 className="h-6 w-6 text-red-500" />
-            case 'warning': return <AlertTriangle className="h-6 w-6 text-orange-500" />
-            case 'info': return <RefreshCw className="h-6 w-6 text-emerald-500" />
-            case 'success': return <Info className="h-6 w-6 text-void-accent-400" />
-            default: return <Info className="h-6 w-6 text-void-accent-400" />
-        }
-    }
-
-    const getBtnVariant = () => {
-        if (variant === 'danger') return 'destructive';
-        if (variant === 'info') return 'default'; // We can use emerald via className if needed
-        return 'default';
-    }
-
     return (
         <Modal open={open} onClose={onClose} className="max-w-md">
             <div className="p-6 flex flex-col items-center text-center space-y-4">
                 <motion.div
                     initial={{ scale: 0.5, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
-                    className={`p-3 rounded-full bg-void-950 border border-void-800 shadow-[0_0_20px_rgba(0,0,0,0.5)]`}
+                    className="p-3 rounded-full bg-void-950 border border-void-800 shadow-[0_0_20px_rgba(0,0,0,0.5)]"
                 >
-                    {getIcon()}
+                    {ICON[variant]}
                 </motion.div>
 
                 <div className="space-y-2">
@@ -75,12 +70,9 @@ export function ConfirmModal({
                         {cancelLabel}
                     </Button>
                     <Button
-                        variant={getBtnVariant()}
+                        variant={BTN_VARIANT[variant]}
                         className={`flex-1 ${variant === 'info' ? 'bg-emerald-600 hover:bg-emerald-500' : ''}`}
-                        onClick={() => {
-                            onConfirm();
-                            // Note: onClose is usually handled by the parent after confirm
-                        }}
+                        onClick={onConfirm}
                         disabled={isLoading}
                     >
                         {isLoading ? "Processing..." : confirmLabel}

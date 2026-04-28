@@ -7,7 +7,6 @@ export interface Profile {
     id: string
     name: string
     createdAt: string
-    size?: string
 }
 
 interface ProfileCardProps {
@@ -15,12 +14,16 @@ interface ProfileCardProps {
     onRestore: (id: string) => void
     onDelete: (id: string) => void
     onUpdate: (id: string) => void
-    onOpenFolder?: (id: string) => void
-    onViewAddons?: (id: string) => void
-    isActive?: boolean
+    onOpenFolder: (id: string) => void
+    onViewAddons: (id: string) => void
 }
 
-export function ProfileCard({ profile, onRestore, onDelete, onUpdate, onOpenFolder, onViewAddons, isActive }: ProfileCardProps) {
+export function ProfileCard({ profile, onRestore, onDelete, onUpdate, onOpenFolder, onViewAddons }: ProfileCardProps) {
+    const stop = (fn: (id: string) => void) => (e: React.MouseEvent) => {
+        e.stopPropagation()
+        fn(profile.id)
+    }
+
     return (
         <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
@@ -29,18 +32,12 @@ export function ProfileCard({ profile, onRestore, onDelete, onUpdate, onOpenFold
             transition={{ duration: 0.2 }}
         >
             <Card
-                className={`card-glass relative overflow-hidden group transition-all duration-300 border-void-accent-600/30 ${onViewAddons ? 'cursor-pointer' : ''} ${isActive ? 'border-void-accent-500 shadow-[0_0_25px_rgba(124,58,237,0.3)]' : 'hover:border-white hover:shadow-[0_0_20px_rgba(255,255,255,0.15)]'}`}
-                onClick={() => onViewAddons && onViewAddons(profile.id)}
+                className="card-glass relative overflow-hidden group transition-all duration-300 border-void-accent-600/30 cursor-pointer hover:border-white hover:shadow-[0_0_20px_rgba(255,255,255,0.15)]"
+                onClick={() => onViewAddons(profile.id)}
             >
-                {isActive && (
-                    <div className="absolute top-0 right-0 p-2">
-                        <span className="flex h-2 w-2 rounded-full bg-void-accent-500 shadow-[0_0_10px_#7c3aed]" />
-                    </div>
-                )}
-
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2 text-lg">
-                        <HardDrive className={`h-5 w-5 ${isActive ? 'text-void-accent-400' : 'text-gray-400'}`} />
+                        <HardDrive className="h-5 w-5 text-gray-400" />
                         {profile.name}
                     </CardTitle>
                     <div className="text-xs text-gray-500 font-mono mt-1">
@@ -55,27 +52,16 @@ export function ProfileCard({ profile, onRestore, onDelete, onUpdate, onOpenFold
                 </CardContent>
 
                 <CardFooter className="gap-2">
-                    <Button
-                        className="flex-1 gap-2"
-                        variant={isActive ? "secondary" : "default"}
-                        onClick={(e) => {
-                            e.stopPropagation()
-                            onRestore(profile.id)
-                        }}
-                        disabled={isActive}
-                    >
+                    <Button className="flex-1 gap-2" onClick={stop(onRestore)}>
                         <RotateCcw className="h-4 w-4" />
-                        {isActive ? 'Active' : 'Restore'}
+                        Restore
                     </Button>
                     <div className="flex gap-1">
                         <Button
                             variant="ghost"
                             size="icon"
                             className="text-gray-500 hover:text-emerald-400 hover:bg-emerald-950/30"
-                            onClick={(e) => {
-                                e.stopPropagation()
-                                onUpdate(profile.id)
-                            }}
+                            onClick={stop(onUpdate)}
                             title="Update with Live Settings"
                         >
                             <RefreshCw className="h-4 w-4" />
@@ -84,10 +70,7 @@ export function ProfileCard({ profile, onRestore, onDelete, onUpdate, onOpenFold
                             variant="ghost"
                             size="icon"
                             className="text-gray-500 hover:text-blue-400 hover:bg-blue-950/30"
-                            onClick={(e) => {
-                                e.stopPropagation()
-                                onOpenFolder && onOpenFolder(profile.id)
-                            }}
+                            onClick={stop(onOpenFolder)}
                             title="Open Folder"
                         >
                             <Folder className="h-4 w-4" />
@@ -96,10 +79,7 @@ export function ProfileCard({ profile, onRestore, onDelete, onUpdate, onOpenFold
                             variant="ghost"
                             size="icon"
                             className="text-gray-500 hover:text-red-400 hover:bg-red-950/30"
-                            onClick={(e) => {
-                                e.stopPropagation()
-                                onDelete(profile.id)
-                            }}
+                            onClick={stop(onDelete)}
                             title="Delete Snapshot"
                         >
                             <Trash2 className="h-4 w-4" />
